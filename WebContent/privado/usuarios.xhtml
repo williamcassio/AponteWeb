@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<body>
+	<h:form id="form" rendered="#{loginBean.usuarioLogado!=null}">
+		<p:focus context="pnedicao" />
+		<p:growl id="msg" />
+		<p:panel id="pnlista" header="Listagem"
+			rendered="#{usuarioBean.pnEdicao==false}">
+			<p:dataTable id="tbllista" value="#{usuarioBean.lista}" var="usuario">
+				<f:facet name="header">Usuários</f:facet>
+				<p:column headerText="Matrícula" width="60">
+					<h:outputText value="#{usuario.matricula}" />
+				</p:column>
+				<p:column headerText="Nome" width="180">
+					<h:outputText value="#{usuario.nome}" />
+				</p:column>
+				<p:column headerText="Login" width="90">
+					<h:outputText value="#{usuario.login}" />
+				</p:column>
+				<p:column headerText="e-Mail" width="250">
+					<h:outputText value="#{usuario.email}" />
+				</p:column>
+
+				<p:column headerText="Ações" width="40">
+					<p:commandLink action="#{usuarioBean.editar()}">
+						<f:ajax execute="@form" render=":form" />
+						<h:graphicImage library="imagens" name="editar16.png"
+							style="border:0" />
+						<f:setPropertyActionListener target="#{usuarioBean.usuario}"
+							value="#{usuario}" />
+					</p:commandLink>
+
+					<p:commandLink action="#{usuarioBean.excluir()}"
+						onclick="if (!confirm('Confirma a exclusão do usuário #{usuario.nome}?')) return false;">
+						<h:graphicImage library="imagens" name="excluir16.png"
+							style="border:0" />
+						<f:setPropertyActionListener target="#{usuarioBean.usuario}"
+							value="#{usuario}" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+			<br />
+			<p:commandButton id="btnNovo"
+				action="#{usuarioBean.novodeUsuarios()}" value="Novo" update=":form" />
+			<h:outputLabel value=" " />
+			<p:commandButton id="btnRetorno"
+				action="#{usuarioBean.doPrincipal()}" value="Retornar" />
+		</p:panel>
+		<p:panel id="pnedicao" header="#{usuarioBean.labelOperacao}"
+			rendered="#{usuarioBean.pnEdicao==true}">
+			<h:panelGrid columns="2">
+				<h:inputHidden value="#{usuarioBean.usuario.id}" />
+				<h:inputHidden value="#{usuarioBean.usuario.administrador}" />
+				<h:outputLabel value="Matrícula" />
+				<p:inputText id="txtmat" value="#{usuarioBean.usuario.matricula}"
+					size="10" maxlength="10" />
+				<h:outputLabel value="Nome" />
+				<p:inputText id="txtnome" value="#{usuarioBean.usuario.nome}"
+					size="50" maxlength="50" />
+				<h:outputLabel value="e-Mail" />
+				<p:inputText id="txtemail" value="#{usuarioBean.usuario.email}"
+					size="80" maxlength="80" />
+				<h:outputLabel value="Login" />
+				<p:inputText id="txtlogin" value="#{usuarioBean.usuario.login}"
+					size="10" maxlength="10" />
+				<h:outputLabel value="Senha" />
+				<p:password id="txtsenha" value="#{usuarioBean.usuario.senha}"
+					size="10" maxlength="10" redisplay="true" />
+				<h:outputLabel value="Confirma Senha" />
+				<p:password id="txtconfirma" value="#{usuarioBean.confirmaSenha}"
+					size="10" maxlength="10" redisplay="true" />
+
+				<h:outputLabel value="Ativo:" />
+				<p:selectBooleanCheckbox value="#{usuarioBean.usuario.ativo}" />
+				<h:outputLabel value="Administrador:" />
+				<p:selectBooleanCheckbox
+					value="#{usuarioBean.usuario.administrador}" />
+				<h:outputLabel value="Recebe Apontes por email:" />
+				<p:selectBooleanCheckbox
+					value="#{usuarioBean.usuario.recebeemail}" />
+					
+			</h:panelGrid>
+			<p:commandButton action="#{usuarioBean.salvardeUsuario()}"
+				value="Salvar" update=":form" />
+			<p:commandButton action="#{usuarioBean.doCancelar()}"
+				value="Cancelar" immediate="true" update=":form" />
+		</p:panel>
+	</h:form>
+</body>
+</html>

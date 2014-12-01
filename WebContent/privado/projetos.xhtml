@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Projetos</title>
+	<h:outputStylesheet library="css" name="estilo.css" />
+</h:head>
+<body>
+	<h:form id="form" rendered="#{loginBean.usuarioLogado!=null}">
+		<p:growl id="msg" />
+		<p:focus context="form" />
+		<p:panel id="pnlista">
+			<p:dataTable id="tbllista" value="#{projetoBean.lista}" var="projeto">
+				<f:facet name="header">Projetos</f:facet>
+				<p:column headerText="Código" width="30" style="text-align: right;">
+					<h:outputText value="#{projeto.id}" />
+				</p:column>
+				<p:column headerText="Sigla" width="60">
+					<h:outputText value="#{projeto.sigla}"
+						style="text-transform:uppercase" />
+				</p:column>
+				<p:column headerText="Descrição" width="240">
+					<h:outputText value="#{projeto.descricao}" />
+				</p:column>
+				<p:column headerText="Ações" width="30">
+					<p:commandLink action="#{projetoBean.editar()}">
+						<f:ajax execute="@form" render=":form" />
+						<h:graphicImage library="imagens" name="editar16.png"
+							style="border:0" />
+						<f:setPropertyActionListener target="#{projetoBean.selecionado}"
+							value="#{projeto}" />
+					</p:commandLink>
+					<p:commandLink action="#{projetoBean.excluir()}"
+						onclick="if (!confirm('Confirma a exclusão do projeto #{projeto.sigla}?')) return false;"
+						update=":form">
+						<h:graphicImage library="imagens" name="excluir16.png"
+							style="border:0" />
+						<f:setPropertyActionListener target="#{projetoBean.selecionado}"
+							value="#{projeto}" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+			<h:panelGrid columns="2">
+				<p:commandButton id="btnnovo" value="Novo"
+					action="#{projetoBean.novo()}"
+					disabled="#{projetoBean.exibeCampos}" update=":form" />
+				<p:commandButton id="btnretornar" value="Retornar"
+					action="#{projetoBean.principal()}"
+					disabled="#{projetoBean.exibeCampos}" update=":form" />
+			</h:panelGrid>
+		</p:panel>
+		<p:panel id="pnedicao" rendered="#{projetoBean.exibeCampos}">
+			<h:inputHidden value="#{projetoBean.selecionado.id}" />
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Sigla" for="txtsigla" />
+				<p:inputText id="txtsigla" value="#{projetoBean.selecionado.sigla}"
+					style="text-transform:uppercase" />
+				<h:outputLabel value="Descrição" for="txtdescricao" />
+				<p:inputText id="txtdescricao"
+					value="#{projetoBean.selecionado.descricao}" size="100" />
+			</h:panelGrid>
+			<p:commandButton id="btnsalvar" value="Salvar"
+				action="#{projetoBean.salvar()}" update=":form" />
+			<p:commandButton id="btncancelar" value="Cancelar"
+				action="#{projetoBean.cancelar()}" update=":form" immediate="true" />
+		</p:panel>
+	</h:form>
+</body>
+</html>

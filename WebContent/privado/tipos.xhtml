@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Tipos de apontamentos</title>
+	<h:outputStylesheet library="css" name="estilo.css" />
+</h:head>
+<body>
+	<h:form id="form" rendered="#{loginBean.usuarioLogado!=null}">
+		<p:growl id="msg" />
+		<p:panel id="pnlista">
+			<p:dataTable id="tbllista" value="#{tipoBean.lista}" var="tipo">
+				<f:facet name="header">Tipos</f:facet>
+				<p:column headerText="Código" width="30" style="text-align: right;">
+					<h:outputText value="#{tipo.id}" />
+				</p:column>
+				<p:column headerText="Descrição" width="180">
+					<h:outputText value="#{tipo.descricao}" />
+				</p:column>
+				<p:column headerText="Ações" width="30">
+					<p:commandLink action="#{tipoBean.editar()}">
+						<f:ajax execute="@form" render=":form" />
+						<h:graphicImage library="imagens" name="editar16.png"
+							style="border:0" />
+						<f:setPropertyActionListener target="#{tipoBean.selecionado}"
+							value="#{tipo}" />
+					</p:commandLink>
+					<p:commandLink action="#{tipoBean.excluir()}"
+						onclick="if (!confirm('Confirma a exclusão do tipo #{tipo.descricao}?')) return false;"
+						update=":form">
+						<h:graphicImage library="imagens" name="excluir16.png"
+							style="border:0" />
+						<f:setPropertyActionListener target="#{tipoBean.selecionado}"
+							value="#{tipo}" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+			<h:panelGrid columns="2">
+				<p:commandButton id="btnnovo" value="Novo"
+					action="#{tipoBean.novo()}" disabled="#{tipoBean.exibeCampos}"
+					update=":form" />
+				<p:commandButton id="btnretornar" value="Retornar"
+					action="#{tipoBean.principal()}" disabled="#{tipoBean.exibeCampos}"
+					update=":form" />
+			</h:panelGrid>
+		</p:panel>
+		<p:panel id="pnedicao" rendered="#{tipoBean.exibeCampos}">
+			<h:inputHidden value="#{tipoBean.selecionado.id}" />
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Descrição" for="txtdescricao" />
+				<p:inputText id="txtdescricao"
+					value="#{tipoBean.selecionado.descricao}" />
+			</h:panelGrid>
+			<p:commandButton id="btnsalvar" value="Salvar"
+				action="#{tipoBean.salvar()}" update=":form" />
+			<p:commandButton id="btncancelar" value="Cancelar"
+				action="#{tipoBean.cancelar()}" update=":form" immediate="true" />
+		</p:panel>
+	</h:form>
+</body>
+</html>

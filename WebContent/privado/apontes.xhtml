@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Apontamentos</title>
+	<h:outputStylesheet library="css" name="estilo.css" />
+</h:head>
+<body>
+	<h:form id="form">
+		<p:growl id="msg" />
+		<p:panel id="pnLista" header="Apontamentos"
+			rendered="#{!aponteBean.pnEdicao}">
+			<h:panelGrid columns="7">
+				<h:outputLabel value="Data inicial" for="dti" />
+				<p:calendar id="dti" value="#{aponteBean.dtIni}" mask="true"
+					pattern="dd/MM/yyyy" locale="pt_BR" size="8" />
+				<h:outputLabel value="Data final" for="dtf" />
+				<p:calendar id="dtf" value="#{aponteBean.dtFim}" mask="true"
+					pattern="dd/MM/yyyy" locale="pt_BR" size="8" />
+
+				<h:outputLabel value="Mostrar de Todos Usuários"
+					rendered="#{aponteBean.mostrarckTodos}" />
+				<p:selectBooleanCheckbox id="todos" value="#{aponteBean.todos}"
+					rendered="#{aponteBean.mostrarckTodos}" />
+				<p:commandButton value="Pesquisar"
+					action="#{aponteBean.pesquisar()}" update=":form" />
+			</h:panelGrid>
+			<p:dataTable id="tbllista" value="#{aponteBean.listaapontamentos}"
+				var="aponte">
+				<f:facet name="header">Apontamentos</f:facet>
+				<p:column headerText="Matrícula" width="70">
+					<h:outputText value="#{aponte.usuario.matricula}" />
+				</p:column>
+				<p:column headerText="Nome" width="500">
+					<h:outputText value="#{aponte.usuario.nome}" />
+				</p:column>
+				<p:column headerText="Data" width="70"
+					styleClass="alinhamentoCentralizado">
+					<h:outputText value="#{aponte.dataFormatada}" />
+				</p:column>
+				<p:column headerText="Ações" width="60">
+					<p:commandLink action="#{aponteBean.editarAponte()}" update=":form"
+						title="Editar apontamento">
+						<f:ajax execute="@this" />
+						<h:graphicImage library="imagens" name="editar16.png"
+							style="border:0" />
+						<f:setPropertyActionListener target="#{aponteBean.apontamento}"
+							value="#{aponte}" />
+					</p:commandLink>
+
+					<p:commandLink action="#{aponteBean.excluirAponte()}"
+						onclick="if (!confirm('Confirma a exclusão do aponte da data #{aponte.dataFormatada}?')) return false;"
+						update=":form" title="Excluir apontamento">
+						<h:graphicImage library="imagens" name="excluir16.png"
+							style="border:0" />
+						<f:setPropertyActionListener target="#{aponteBean.apontamento}"
+							value="#{aponte}" />
+					</p:commandLink>
+
+					<p:commandLink action="#{aponteBean.gravarPlanilha()}"
+						update=":form" title="Gerar planilha do apontamento">
+						<h:graphicImage library="imagens" name="excel16.png"
+							style="border:0" />
+						<f:setPropertyActionListener target="#{aponteBean.apontamento}"
+							value="#{aponte}" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+			<h:panelGrid columns="2">
+				<p:commandButton id="btnNovo" value="Novo" update=":form"
+					action="#{aponteBean.novoAponte()}" />
+
+				<p:commandButton id="btRetorno" value="Retornar"
+					action="#{aponteBean.retornarPrincipal()}" />
+			</h:panelGrid>
+		</p:panel>
+		<p:focus context="pn" />
+		<p:panel id="pnedicao" header="Aponte"
+			rendered="#{aponteBean.pnEdicao}">
+
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Data:" />
+				<p:calendar id="edtdata" value="#{aponteBean.apontamento.data}"
+					mask="true" pattern="dd/MM/yyyy" locale="pt_BR" size="8"></p:calendar>
+			</h:panelGrid>
+			<br />
+			<h:panelGrid id="pn" columns="8">
+				<h:outputLabel value="Tipo:" />
+				<p:selectOneMenu value="#{aponteBean.item.tipo}"
+					converter="#{aponteBean.tipoConverter}">
+					<f:selectItems value="#{aponteBean.tipos}" var="ite"
+						itemLabel="#{ite.descricao}" />
+					<p:ajax update=":form:pn" />
+				</p:selectOneMenu>
+				<h:outputLabel value="Projeto:" />
+				<p:selectOneMenu id="cbProjeto"
+					value="#{aponteBean.idProjetoSelecionado}"
+					disabled="#{!aponteBean.projeto}">
+					<f:selectItem itemValue="0" itemLabel="Selecione um projeto"
+						noSelectionOption="true" />
+					<f:selectItems value="#{aponteBean.listaprojetos}" var="projeto"
+						itemValue="#{projeto.id}" itemLabel="#{projeto.sigla}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="ID Chamado:" rendered="#{!aponteBean.projeto}" />
+				<p:inputText value="#{aponteBean.item.idChamado}" size="8"
+					style="text-transform:uppercase" rendered="#{!aponteBean.projeto}" />
+				<p:outputLabel value="Fase" />
+				<p:inputText value="#{aponteBean.item.fase}" size="30"
+					style="text-transform:uppercase" />
+			</h:panelGrid>
+			<h:panelGrid id="pn2" columns="5">
+				<h:outputLabel value="Descrição:" />
+				<p:inputText value="#{aponteBean.item.descricao}" size="90"
+					required="true" requiredMessage="Informe a descrição"
+					style="text-transform:uppercase" />
+				<h:outputLabel value="Duração:" />
+				<p:inputText value="#{aponteBean.item.duracao}" size="4">
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+				</p:inputText>
+				<p:commandButton value="Inserir"
+					action="#{aponteBean.inserirNaLista()}" update=":form" />
+			</h:panelGrid>
+			<h:panelGrid id="listagem" rendered="#{aponteBean.listaitens!=null}">
+				<p:dataTable id="tbLista" value="#{aponteBean.listaitens}"
+					var="item">
+					<f:facet name="header">Itens apontamento</f:facet>
+					<f:facet name="footer">Total Horas #{aponteBean.stotal}
+				</f:facet>
+					<p:column headerText="Tipo" width="180">
+						<h:outputText value="#{item.tipo.descricao}" />
+					</p:column>
+					<p:column headerText="Projeto" width="100">
+						<h:outputText value="#{item.projeto.sigla}" />
+					</p:column>
+					<p:column headerText="ID Chamado" width="100">
+						<h:outputText value="#{item.idChamado}"
+							style="text-transform:uppercase" />
+					</p:column>
+					<p:column headerText="Fase" width="180">
+						<h:outputText value="#{item.fase}"
+							style="text-transform:uppercase" />
+					</p:column>
+					<p:column headerText="Descrição">
+						<h:outputText value="#{item.descricao}"
+							style="text-transform:uppercase" />
+					</p:column>
+					<p:column headerText="Duração" width="80">
+						<h:outputText value="#{item.duracao}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Ação" width="70">
+						<p:commandLink action="#{aponteBean.removerDaLista()}"
+							update=":form" immediate="true">
+							<f:ajax execute="@this" />
+							<h:graphicImage library="imagens" name="excluir16.png"
+								style="border:0" />
+							<f:setPropertyActionListener target="#{aponteBean.item}"
+								value="#{item}" />
+						</p:commandLink>
+					</p:column>
+				</p:dataTable>
+			</h:panelGrid>
+			<h:panelGrid columns="3">
+				<p:commandButton action="#{aponteBean.salvarApontamento()}"
+					id="btSalvar" value="Salvar" immediate="true" update=":form" />
+				<p:commandButton action="#{aponteBean.cancelar()}" value="Retornar"
+					immediate="true" update=":form" />
+			</h:panelGrid>
+		</p:panel>
+
+		<p:dialog header="Confirma" widgetVar="confirm" showEffect="explode"
+			hideEffect="bounce">
+			<h:outputText value="Confirma exclusão deste registro?" />
+			<h:panelGrid columns="2">
+				<p:commandButton value="Sim" action="#{aponteBean.excluirAponte()}"
+					onclick="confirm.hide()" update=":form">
+				</p:commandButton>
+				<p:commandButton value="Não" onclick="confirm.hide()"></p:commandButton>
+			</h:panelGrid>
+		</p:dialog>
+	</h:form>
+</body>
+</html>
