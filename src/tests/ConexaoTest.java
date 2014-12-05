@@ -6,6 +6,7 @@ import entity.Usuario;
 public class ConexaoTest {
 
 	public static void main(String[] args) {
+		
 		Usuario usuario = new Usuario();
 		UsuarioRN usuarioRN = new UsuarioRN();
 		usuario.setMatricula("30131995");
@@ -15,7 +16,17 @@ public class ConexaoTest {
 		usuario.setEmail("william.gomes@uninorte.com.br");
 		usuario.setAdministrador(true);
 		usuario.setSenha("sql");
-		usuarioRN.salvar(usuario);	
+		usuarioRN.salvar(usuario);
+		/*
+		Session session = null;
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();
+			System.out.println("Conectou!!");
+		} finally {
+			session.close();
+			System.out.println("Fechou Conexão");
+		}
+		*/		
 	}
 
 }

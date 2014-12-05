@@ -13,12 +13,12 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
+@SequenceGenerator(name = "seq_usu", sequenceName = "SEQ_USU", allocationSize = 1)
 public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "seq_usu", sequenceName = "SEQ_USU", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_usu")
 	@Column(name = "usu_id", nullable = false)
 	private Integer id;

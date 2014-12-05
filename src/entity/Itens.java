@@ -19,12 +19,12 @@ import org.hibernate.annotations.OnDeleteAction;
 @SuppressWarnings("deprecation")
 @Entity
 @Table(name="itens_apontamento")
+@SequenceGenerator(name="seq_ite", sequenceName="SEQ_ITE", allocationSize=1)
 public class Itens implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@SequenceGenerator(name="seq_ite", sequenceName="SEQ_ITE", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq_ite")
 	private Integer id;
 	

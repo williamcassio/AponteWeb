@@ -13,12 +13,12 @@ import javax.persistence.Table;
 import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Table(name="tipo")
+@SequenceGenerator(name="seq_tip", sequenceName="SEQ_TIP", allocationSize=1)
 public class Tipo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@SequenceGenerator(name="seq_tip", sequenceName="SEQ_TIP", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq_tip")	
 	@Column(name="tip_id", nullable=false)
 	private Integer id;
