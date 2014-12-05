@@ -10,36 +10,39 @@
 	<h:outputStylesheet library="css" name="estilo.css" />
 </h:head>
 <body>
-	<h:form id="form">
-		<h:inputHidden value="#{usuarioBean.usuario.id}" />
-		<p:ajaxStatus style="width=66px;height=66px;" id="ajaxStatus">
-			<f:facet name="start">
-				<h:graphicImage library="imagens" name="ajaxLoading.gif" />
-			</f:facet>
-			<f:facet name="complete">
-				<h:outputText value="" />
-			</f:facet>
-		</p:ajaxStatus>
-		<p:growl id="msg" />
-		<p:focus context="form" />
-		<h:panelGrid columns="2">
-			<f:facet name="header">Login</f:facet>
+	<div align="center">
+		<h:form id="form">
+			<h:inputHidden value="#{usuarioBean.usuario.id}" />
+			<p:ajaxStatus style="width=66px;height=66px;" id="ajaxStatus">
+				<f:facet name="start">
+					<h:graphicImage library="imagens" name="ajaxLoading.gif" />
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+			<p:growl id="msg" />
+			<p:focus context="form" />
+			<h:panelGrid columns="2" styleClass="alinhamentoCentralizado">
+				<f:facet name="header">Login</f:facet>
 
-			<h:outputLabel value="Login:" />
-			<p:inputText value="#{loginBean.login}" required="true"
-				requiredMessage="Informe o login" />
-			<h:outputLabel value="Senha:" />
-			<p:password value="#{loginBean.senha}" required="true"
-				requiredMessage="Informe a senha" />
+				<h:outputLabel value="Login:" />
+				<p:inputText value="#{loginBean.login}" required="true"
+					requiredMessage="Informe o login" />
+				<h:outputLabel value="Senha:" />
+				<p:password value="#{loginBean.senha}" required="true"
+					requiredMessage="Informe a senha" />
+				<br />
 
-			<f:facet name="footer">
-				<p:commandButton value="Login" action="#{loginBean.efetuarLogin()}"
-					update="form" />
-				<p:commandButton action="#{usuarioBean.novo()}" value="Registre-se"
-					immediate="true" />
+				<f:facet name="footer">
+					<p:commandButton value="Efetuar Login"
+						action="#{loginBean.efetuarLogin()}" update="form" />
+					<p:commandButton action="#{usuarioBean.novo()}" value="Registre-se"
+						immediate="true" />
 
-			</f:facet>
-		</h:panelGrid>
-	</h:form>
+				</f:facet>
+			</h:panelGrid>
+		</h:form>
+	</div>
 </body>
 </html>

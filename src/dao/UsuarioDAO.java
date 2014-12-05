@@ -39,6 +39,7 @@ public class UsuarioDAO implements UsuarioService {
 			session.close();
 			return 1;
 		} catch(HibernateException e){
+			System.out.println(e.getMessage());
 			session.getTransaction().rollback();
 			session.close();
 			return 0;
